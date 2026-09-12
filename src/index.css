@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+  background-color: #08100c;
+}
+
+:root[data-theme='light'], html.light {
+  color-scheme: light;
+  background-color: #f8faf9;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html.dark, html:not(.light) {
+  color-scheme: dark;
+  background-color: #08100c;
+}
+
+html.light {
+  color-scheme: light;
+  background-color: #f8faf9;
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: clip;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html.dark body, html:not(.light) body {
+  color-scheme: dark;
+  background-color: #08100c;
+  color: #ffffff;
+  scrollbar-width: thin;
+  scrollbar-color: #1a3828 #08100c;
+}
+
+html.light body {
+  color-scheme: light;
+  background-color: #f8faf9;
+  color: #0f172a;
+  scrollbar-width: thin;
+  scrollbar-color: #10b981 #f1f5f9;
+}
+
+/* Custom sleek scrollbar for Chromium / WebKit */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+html.dark ::-webkit-scrollbar-track, html:not(.light) ::-webkit-scrollbar-track {
+  background: #08100c;
+}
+
+html.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+html.dark ::-webkit-scrollbar-thumb, html:not(.light) ::-webkit-scrollbar-thumb {
+  background: #173826;
+  border-radius: 9999px;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: #a7f3d0;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #10b981;
+}

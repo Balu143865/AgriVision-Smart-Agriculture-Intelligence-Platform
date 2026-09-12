@@ -1,0 +1,6 @@
+{
+  "name": "AgriVision – Smart Agriculture Intelligence Platform",
+  "description": "Transform farm data into intelligent decisions with real-time crop, soil, weather, pest risk, and agricultural market intelligence.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
