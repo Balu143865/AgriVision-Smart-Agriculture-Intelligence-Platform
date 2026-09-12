@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { generateCropAndYieldPDF } from '../utils/pdfGenerator';
 import { ICrop, IDashboardSummary, IPestRisk } from '../types';
+import { useTheme } from '../context/ThemeContext';
 
 interface ExportPDFModalProps {
   isOpen: boolean;
@@ -35,6 +36,9 @@ export const ExportPDFModal: React.FC<ExportPDFModalProps> = ({
   pestRisks = [],
   onSuccessToast,
 }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
   const [reportType, setReportType] = useState<'full' | 'crops' | 'yield'>('full');
   const [customSignoff, setCustomSignoff] = useState(agronomistName);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -68,25 +72,39 @@ export const ExportPDFModal: React.FC<ExportPDFModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="w-full max-w-lg rounded-2xl bg-[#0b1611] border border-emerald-700/60 p-5 sm:p-6 shadow-2xl space-y-5 text-xs text-zinc-300 relative">
+      <div className={`w-full max-w-lg rounded-2xl border p-5 sm:p-6 shadow-2xl space-y-5 text-xs relative transition-all ${
+        isDark
+          ? 'bg-[#0b1611] border-emerald-700/60 text-zinc-300'
+          : 'bg-white border-slate-200 text-slate-700 shadow-xl'
+      }`}>
         {/* Header */}
-        <div className="flex items-start justify-between pb-4 border-b border-emerald-900/60">
+        <div className={`flex items-start justify-between pb-4 border-b ${
+          isDark ? 'border-emerald-900/60' : 'border-slate-200'
+        }`}>
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+            <div className={`p-2.5 rounded-xl border ${
+              isDark
+                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                : 'bg-emerald-50 border-emerald-200 text-emerald-700'
+            }`}>
               <FileText className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white font-['Outfit']">
+              <h3 className={`text-base font-bold font-['Outfit'] ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 Export Intelligence Audit Report
               </h3>
-              <p className="text-xs text-zinc-400">
+              <p className={`text-xs ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
                 Generate production-ready PDF documentation for stakeholders & agronomists
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-colors"
+            className={`p-1 rounded-lg transition-colors ${
+              isDark
+                ? 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
+                : 'text-slate-400 hover:text-slate-800 hover:bg-slate-100'
+            }`}
           >
             <X className="w-4 h-4" />
           </button>
@@ -94,7 +112,7 @@ export const ExportPDFModal: React.FC<ExportPDFModalProps> = ({
 
         {/* Report Scope Selector */}
         <div className="space-y-2">
-          <label className="block text-zinc-300 font-medium">Select Intelligence Scope</label>
+          <label className={`block font-medium ${isDark ? 'text-zinc-300' : 'text-slate-700'}`}>Select Intelligence Scope</label>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
             {/* Scope 1: Comprehensive */}
             <button
@@ -102,15 +120,19 @@ export const ExportPDFModal: React.FC<ExportPDFModalProps> = ({
               onClick={() => setReportType('full')}
               className={`p-3 rounded-xl border text-left transition-all ${
                 reportType === 'full'
-                  ? 'bg-emerald-950/60 border-emerald-500 text-white shadow-sm ring-1 ring-emerald-500'
-                  : 'bg-emerald-950/20 border-emerald-900/60 text-zinc-400 hover:border-emerald-700/60'
+                  ? isDark
+                    ? 'bg-emerald-950/60 border-emerald-500 text-white shadow-xs ring-1 ring-emerald-500'
+                    : 'bg-emerald-50 border-emerald-500 text-emerald-950 shadow-xs ring-1 ring-emerald-500'
+                  : isDark
+                  ? 'bg-emerald-950/20 border-emerald-900/60 text-zinc-400 hover:border-emerald-700/60'
+                  : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-emerald-300'
               }`}
             >
               <div className="flex items-center justify-between mb-1">
-                <span className="font-bold text-xs text-zinc-100">Full Audit</span>
-                {reportType === 'full' && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />}
+                <span className={`font-bold text-xs ${reportType === 'full' ? (isDark ? 'text-white' : 'text-emerald-900') : (isDark ? 'text-zinc-200' : 'text-slate-800')}`}>Full Audit</span>
+                {reportType === 'full' && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />}
               </div>
-              <p className="text-[10px] text-zinc-400 leading-tight">
+              <p className={`text-[10px] leading-tight ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
                 Crop health, NDVI, yield projections & ICAR recommendations.
               </p>
             </button>
@@ -121,18 +143,22 @@ export const ExportPDFModal: React.FC<ExportPDFModalProps> = ({
               onClick={() => setReportType('crops')}
               className={`p-3 rounded-xl border text-left transition-all ${
                 reportType === 'crops'
-                  ? 'bg-emerald-950/60 border-emerald-500 text-white shadow-sm ring-1 ring-emerald-500'
-                  : 'bg-emerald-950/20 border-emerald-900/60 text-zinc-400 hover:border-emerald-700/60'
+                  ? isDark
+                    ? 'bg-emerald-950/60 border-emerald-500 text-white shadow-xs ring-1 ring-emerald-500'
+                    : 'bg-emerald-50 border-emerald-500 text-emerald-950 shadow-xs ring-1 ring-emerald-500'
+                  : isDark
+                  ? 'bg-emerald-950/20 border-emerald-900/60 text-zinc-400 hover:border-emerald-700/60'
+                  : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-emerald-300'
               }`}
             >
               <div className="flex items-center justify-between mb-1">
-                <span className="font-bold text-xs text-zinc-100 flex items-center gap-1">
-                  <Sprout className="w-3 h-3 text-emerald-400" />
+                <span className={`font-bold text-xs flex items-center gap-1 ${reportType === 'crops' ? (isDark ? 'text-white' : 'text-emerald-900') : (isDark ? 'text-zinc-200' : 'text-slate-800')}`}>
+                  <Sprout className="w-3 h-3 text-emerald-500" />
                   Crop Health
                 </span>
-                {reportType === 'crops' && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />}
+                {reportType === 'crops' && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />}
               </div>
-              <p className="text-[10px] text-zinc-400 leading-tight">
+              <p className={`text-[10px] leading-tight ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
                 Canopy vigor, growth stages, moisture levels & pest alerts.
               </p>
             </button>
@@ -143,18 +169,22 @@ export const ExportPDFModal: React.FC<ExportPDFModalProps> = ({
               onClick={() => setReportType('yield')}
               className={`p-3 rounded-xl border text-left transition-all ${
                 reportType === 'yield'
-                  ? 'bg-emerald-950/60 border-emerald-500 text-white shadow-sm ring-1 ring-emerald-500'
-                  : 'bg-emerald-950/20 border-emerald-900/60 text-zinc-400 hover:border-emerald-700/60'
+                  ? isDark
+                    ? 'bg-emerald-950/60 border-emerald-500 text-white shadow-xs ring-1 ring-emerald-500'
+                    : 'bg-emerald-50 border-emerald-500 text-emerald-950 shadow-xs ring-1 ring-emerald-500'
+                  : isDark
+                  ? 'bg-emerald-950/20 border-emerald-900/60 text-zinc-400 hover:border-emerald-700/60'
+                  : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-emerald-300'
               }`}
             >
               <div className="flex items-center justify-between mb-1">
-                <span className="font-bold text-xs text-zinc-100 flex items-center gap-1">
-                  <TrendingUp className="w-3 h-3 text-lime-400" />
+                <span className={`font-bold text-xs flex items-center gap-1 ${reportType === 'yield' ? (isDark ? 'text-white' : 'text-emerald-900') : (isDark ? 'text-zinc-200' : 'text-slate-800')}`}>
+                  <TrendingUp className="w-3 h-3 text-emerald-500" />
                   Yield Forecast
                 </span>
-                {reportType === 'yield' && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />}
+                {reportType === 'yield' && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />}
               </div>
-              <p className="text-[10px] text-zinc-400 leading-tight">
+              <p className={`text-[10px] leading-tight ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
                 Historical harvest yields, multi-month AI forecasts & variance.
               </p>
             </button>
@@ -164,47 +194,63 @@ export const ExportPDFModal: React.FC<ExportPDFModalProps> = ({
         {/* Report Parameters */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
           <div>
-            <label className="block text-zinc-400 font-medium mb-1">Active Farm Unit</label>
+            <label className={`block font-medium mb-1 ${isDark ? 'text-zinc-400' : 'text-slate-600'}`}>Active Farm Unit</label>
             <input
               type="text"
               disabled
               value={farmName}
-              className="w-full p-2.5 rounded-lg bg-emerald-950/40 border border-emerald-900 text-zinc-300 font-medium cursor-not-allowed"
+              className={`w-full p-2.5 rounded-lg border font-medium cursor-not-allowed ${
+                isDark
+                  ? 'bg-emerald-950/40 border-emerald-900 text-zinc-300'
+                  : 'bg-slate-100 border-slate-200 text-slate-700'
+              }`}
             />
           </div>
 
           <div>
-            <label className="block text-zinc-400 font-medium mb-1">Agronomist Sign-Off</label>
+            <label className={`block font-medium mb-1 ${isDark ? 'text-zinc-400' : 'text-slate-600'}`}>Agronomist Sign-Off</label>
             <input
               type="text"
               value={customSignoff}
               onChange={e => setCustomSignoff(e.target.value)}
               placeholder="e.g. Dr. Ramesh Sundaram"
-              className="w-full p-2.5 rounded-lg bg-[#08100c] border border-emerald-800 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-emerald-400"
+              className={`w-full p-2.5 rounded-lg border focus:outline-none focus:border-emerald-500 transition-colors ${
+                isDark
+                  ? 'bg-[#08100c] border-emerald-800 text-zinc-100 placeholder-zinc-500'
+                  : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'
+              }`}
             />
           </div>
         </div>
 
         {/* Included Data Snapshot */}
-        <div className="p-3 rounded-xl bg-emerald-950/30 border border-emerald-800/40 space-y-2">
-          <span className="text-[11px] font-semibold text-emerald-300 uppercase tracking-wider block">
+        <div className={`p-3 rounded-xl border space-y-2 ${
+          isDark
+            ? 'bg-emerald-950/30 border-emerald-800/40'
+            : 'bg-emerald-50/60 border-emerald-100'
+        }`}>
+          <span className={`text-[11px] font-semibold uppercase tracking-wider block ${
+            isDark ? 'text-emerald-300' : 'text-emerald-800'
+          }`}>
             Report Output Specifications
           </span>
-          <div className="grid grid-cols-2 gap-2 text-[11px] text-zinc-400">
+          <div className={`grid grid-cols-2 gap-2 text-[11px] ${
+            isDark ? 'text-zinc-400' : 'text-slate-600'
+          }`}>
             <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
+              <CheckCircle2 className="w-3 h-3 text-emerald-500 shrink-0" />
               <span>{crops.length} Monitored Field Blocks</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
+              <CheckCircle2 className="w-3 h-3 text-emerald-500 shrink-0" />
               <span>AI Multi-Month Yield Forecasts</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
+              <CheckCircle2 className="w-3 h-3 text-emerald-500 shrink-0" />
               <span>ICAR Benchmark Compliance</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
+              <CheckCircle2 className="w-3 h-3 text-emerald-500 shrink-0" />
               <span>LoRaWAN Node Telemetry Certified</span>
             </div>
           </div>
@@ -216,7 +262,11 @@ export const ExportPDFModal: React.FC<ExportPDFModalProps> = ({
             type="button"
             onClick={onClose}
             disabled={isGenerating}
-            className="px-4 py-2 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-zinc-700 font-medium transition-colors"
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              isDark
+                ? 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            }`}
           >
             Cancel
           </button>
@@ -224,7 +274,7 @@ export const ExportPDFModal: React.FC<ExportPDFModalProps> = ({
             type="button"
             onClick={handleGenerate}
             disabled={isGenerating}
-            className="px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold flex items-center gap-2 shadow-lg shadow-emerald-950 transition-all active:scale-[0.98] disabled:opacity-75"
+            className="px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold flex items-center gap-2 shadow-md transition-all active:scale-[0.98] disabled:opacity-75"
           >
             {isGenerating ? (
               <>

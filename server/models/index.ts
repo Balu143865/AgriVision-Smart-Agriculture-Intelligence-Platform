@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { ICrop, ISoilData, IWeatherData, IPestRisk, IMarketPrice, IFarmActivity, IUser } from './types';
+import { ICrop, ISoilData, IWeatherData, IPestRisk, IMarketPrice, IFarmActivity, IUser, IIoTDevice } from './types';
 
 // 1. User Schema
 export interface IUserDocument extends Omit<IUser, '_id'>, Document {}
@@ -122,6 +122,34 @@ export const FarmActivitySchema = new Schema<IFarmActivityDocument>({
   status: { type: String, enum: ['Completed', 'Pending', 'In Progress'], default: 'Completed' }
 });
 
+// 8. IoT Device Schema
+export type IIoTDeviceDocument = Omit<Document, 'model'> & Omit<IIoTDevice, '_id'> & {
+  model: string;
+};
+export const IoTDeviceSchema = new Schema<IIoTDeviceDocument>({
+  deviceId: { type: String, required: true, unique: true },
+  name: { type: String, required: true },
+  model: { type: String, required: true },
+  type: { type: String, default: 'soil_npk_probe' },
+  status: { type: String, enum: ['online', 'pairing', 'offline', 'calibrating'], default: 'online' },
+  protocol: { type: String, default: 'LoRaWAN 865MHz' },
+  batteryLevel: { type: Number, default: 100 },
+  signalStrength: { type: Number, default: -70 },
+  lastSync: { type: String, default: () => new Date().toISOString() },
+  sector: { type: String, required: true },
+  depths: { type: String, default: '15cm, 30cm' },
+  macAddress: { type: String, required: true },
+  liveReadings: {
+    moisture: { type: Number, required: true },
+    ph: { type: Number, required: true },
+    nitrogen: { type: Number, required: true },
+    phosphorus: { type: Number, required: true },
+    potassium: { type: Number, required: true },
+    soilTemp: { type: Number, required: true },
+    electricalConductivity: { type: Number, required: true },
+  },
+});
+
 // Safe model instantiations (handles existing models if reloaded)
 export const UserModel = mongoose.models.User || mongoose.model<IUserDocument>('User', UserSchema);
 export const CropModel = mongoose.models.Crop || mongoose.model<ICropDocument>('Crop', CropSchema);
@@ -130,3 +158,4 @@ export const WeatherDataModel = mongoose.models.WeatherData || mongoose.model<IW
 export const PestRiskModel = mongoose.models.PestRisk || mongoose.model<IPestRiskDocument>('PestRisk', PestRiskSchema);
 export const MarketPriceModel = mongoose.models.MarketPrice || mongoose.model<IMarketPriceDocument>('MarketPrice', MarketPriceSchema);
 export const FarmActivityModel = mongoose.models.FarmActivity || mongoose.model<IFarmActivityDocument>('FarmActivity', FarmActivitySchema);
+export const IoTDeviceModel = mongoose.models.IoTDevice || mongoose.model<IIoTDeviceDocument>('IoTDevice', IoTDeviceSchema);

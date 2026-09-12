@@ -7,6 +7,8 @@ import {
   defaultMarketPrices,
   defaultFarmActivities,
   defaultUsers,
+  defaultDevices,
+  generateDynamic7DayForecast,
 } from '../data/seedData';
 import {
   CropModel,
@@ -16,8 +18,9 @@ import {
   MarketPriceModel,
   FarmActivityModel,
   UserModel,
+  IoTDeviceModel,
 } from '../models/index';
-import { ICrop, ISoilData, IWeatherData, IPestRisk, IMarketPrice, IFarmActivity, IUser } from '../models/types';
+import { ICrop, ISoilData, IWeatherData, IPestRisk, IMarketPrice, IFarmActivity, IUser, IIoTDevice } from '../models/types';
 
 let isMongoConnected = false;
 
@@ -30,6 +33,7 @@ class MemoryStore {
   marketPrices: IMarketPrice[] = JSON.parse(JSON.stringify(defaultMarketPrices));
   farmActivities: IFarmActivity[] = JSON.parse(JSON.stringify(defaultFarmActivities));
   users: IUser[] = JSON.parse(JSON.stringify(defaultUsers));
+  devices: IIoTDevice[] = JSON.parse(JSON.stringify(defaultDevices));
 }
 
 const memoryStore = new MemoryStore();
@@ -70,6 +74,7 @@ async function seedMongoDatabase() {
       await (MarketPriceModel as any).insertMany(defaultMarketPrices);
       await (FarmActivityModel as any).insertMany(defaultFarmActivities);
       await (UserModel as any).insertMany(defaultUsers);
+      await (IoTDeviceModel as any).insertMany(defaultDevices);
       console.log('[AgriVision DB] Seeding completed successfully.');
     }
   } catch (seedErr) {
@@ -160,15 +165,22 @@ export const dbService = {
 
   // Weather operations
   async getWeatherData(): Promise<IWeatherData> {
+    let result: IWeatherData = memoryStore.weatherData;
     if (isMongoConnected) {
       try {
         const data = await WeatherDataModel.findOne().lean();
-        if (data) return data as unknown as IWeatherData;
+        if (data) {
+          result = data as unknown as IWeatherData;
+        }
       } catch (e) {
-        return memoryStore.weatherData;
+        result = memoryStore.weatherData;
       }
     }
-    return memoryStore.weatherData;
+    // Always guarantee the 7-day forecast starts dynamically from current day
+    return {
+      ...result,
+      forecast7Days: generateDynamic7DayForecast(),
+    };
   },
 
   // Pest risk operations
@@ -264,5 +276,154 @@ export const dbService = {
 
     memoryStore.users.push(newUser);
     return newUser;
+  },
+
+  // IoT Device Operations
+  async getDevices(): Promise<IIoTDevice[]> {
+    if (isMongoConnected) {
+      try {
+        const devices = await IoTDeviceModel.find().lean();
+        if (devices && devices.length > 0) return devices as unknown as IIoTDevice[];
+      } catch (e) {
+        return memoryStore.devices;
+      }
+    }
+    return memoryStore.devices;
+  },
+
+  async getDeviceById(id: string): Promise<IIoTDevice | null> {
+    if (isMongoConnected) {
+      try {
+        const dev = await (IoTDeviceModel as any).findOne({ $or: [{ _id: id }, { deviceId: id }] }).lean();
+        if (dev) return dev as unknown as IIoTDevice;
+      } catch (e) {}
+    }
+    return memoryStore.devices.find(d => d._id === id || d.deviceId === id) || null;
+  },
+
+  async pairDevice(deviceData: Partial<IIoTDevice>): Promise<{ device: IIoTDevice; updatedSoil: ISoilData }> {
+    const newDev: IIoTDevice = {
+      _id: `dev_${Date.now()}`,
+      deviceId: deviceData.deviceId || `AGRI-SOIL-${Math.floor(100 + Math.random() * 900)}X`,
+      name: deviceData.name || 'New IoT Soil Probe',
+      model: deviceData.model || 'AgriSense LoRa Pro-X4',
+      type: deviceData.type || 'soil_npk_probe',
+      status: 'online',
+      protocol: deviceData.protocol || 'LoRaWAN 865MHz',
+      batteryLevel: deviceData.batteryLevel ?? 98,
+      signalStrength: deviceData.signalStrength ?? -64,
+      lastSync: 'Just now',
+      sector: deviceData.sector || 'Sector 4A - North Plot',
+      depths: deviceData.depths || '15cm, 30cm',
+      macAddress: deviceData.macAddress || `8C:1F:${Math.floor(10 + Math.random() * 89)}:${Math.floor(10 + Math.random() * 89)}:9A:${Math.floor(10 + Math.random() * 89)}`,
+      liveReadings: {
+        moisture: deviceData.liveReadings?.moisture ?? 65,
+        ph: deviceData.liveReadings?.ph ?? 6.8,
+        nitrogen: deviceData.liveReadings?.nitrogen ?? 240,
+        phosphorus: deviceData.liveReadings?.phosphorus ?? 36,
+        potassium: deviceData.liveReadings?.potassium ?? 300,
+        soilTemp: deviceData.liveReadings?.soilTemp ?? 24.0,
+        electricalConductivity: deviceData.liveReadings?.electricalConductivity ?? 1.12,
+      },
+    };
+
+    if (isMongoConnected) {
+      try {
+        const created = await IoTDeviceModel.create(newDev);
+        newDev._id = (created as any)._id.toString();
+      } catch (e) {
+        console.error('MongoDB device creation failed, saving to memory store', e);
+      }
+    }
+    memoryStore.devices.unshift(newDev);
+
+    // Immediately propagate real-time soil telemetry to database entries
+    const updatedSoil = await this.updateSoilData({
+      soilMoisture: newDev.liveReadings.moisture,
+      phLevel: newDev.liveReadings.ph,
+      nitrogen: newDev.liveReadings.nitrogen,
+      phosphorus: newDev.liveReadings.phosphorus,
+      potassium: newDev.liveReadings.potassium,
+      soilTemperature: newDev.liveReadings.soilTemp,
+      electricalConductivity: newDev.liveReadings.electricalConductivity,
+      lastUpdated: new Date().toISOString(),
+      irrigationRecommendation: newDev.liveReadings.moisture < 50
+        ? 'Deficit detected by paired sensor. Initiate irrigation within 3 hours.'
+        : 'Soil hydration optimal per paired physical sensor telemetry.',
+    });
+
+    // Automatically record farm activity
+    await this.addFarmActivity({
+      title: `Physical IoT Soil Probe Paired: ${newDev.deviceId}`,
+      description: `Physical sensor "${newDev.name}" (${newDev.protocol}) paired and synchronized with ${newDev.sector}. Live telemetry populated real-time database entries: Moisture ${newDev.liveReadings.moisture}%, pH ${newDev.liveReadings.ph}, NPK ${newDev.liveReadings.nitrogen}:${newDev.liveReadings.phosphorus}:${newDev.liveReadings.potassium}.`,
+      category: 'Sensor Calibration',
+      severity: 'Success',
+      actor: 'IoT Mesh Gateway',
+      status: 'Completed',
+    });
+
+    return { device: newDev, updatedSoil };
+  },
+
+  async updateDeviceTelemetry(deviceId: string, readings: Partial<IIoTDevice['liveReadings']>): Promise<{ device: IIoTDevice; updatedSoil: ISoilData } | null> {
+    const dev = memoryStore.devices.find(d => d._id === deviceId || d.deviceId === deviceId);
+    if (!dev) return null;
+
+    Object.assign(dev.liveReadings, readings);
+    dev.lastSync = 'Just now';
+    dev.status = 'online';
+
+    if (isMongoConnected) {
+      try {
+        await (IoTDeviceModel as any).updateOne(
+          { $or: [{ _id: deviceId }, { deviceId }] },
+          { $set: { liveReadings: dev.liveReadings, lastSync: dev.lastSync, status: 'online' } }
+        );
+      } catch (e) {}
+    }
+
+    // Populate real-time soil telemetry in database
+    const updatedSoil = await this.updateSoilData({
+      soilMoisture: dev.liveReadings.moisture,
+      phLevel: dev.liveReadings.ph,
+      nitrogen: dev.liveReadings.nitrogen,
+      phosphorus: dev.liveReadings.phosphorus,
+      potassium: dev.liveReadings.potassium,
+      soilTemperature: dev.liveReadings.soilTemp,
+      electricalConductivity: dev.liveReadings.electricalConductivity,
+      lastUpdated: new Date().toISOString(),
+    });
+
+    return { device: dev, updatedSoil };
+  },
+
+  async removeDevice(deviceId: string): Promise<boolean> {
+    const idx = memoryStore.devices.findIndex(d => d._id === deviceId || d.deviceId === deviceId);
+    if (idx !== -1) {
+      memoryStore.devices.splice(idx, 1);
+    }
+    if (isMongoConnected) {
+      try {
+        await (IoTDeviceModel as any).deleteOne({ $or: [{ _id: deviceId }, { deviceId }] });
+      } catch (e) {}
+    }
+    return true;
+  },
+
+  async testDevicePing(deviceId: string): Promise<{ latencyMs: number; rssi: number; battery: number; timestamp: string }> {
+    const dev = memoryStore.devices.find(d => d._id === deviceId || d.deviceId === deviceId);
+    const latencyMs = Math.floor(18 + Math.random() * 25);
+    const rssi = dev ? dev.signalStrength + Math.floor(Math.random() * 4 - 2) : -68;
+    const battery = dev ? dev.batteryLevel : 95;
+    if (dev) {
+      dev.lastSync = 'Just now';
+      dev.signalStrength = rssi;
+    }
+    return {
+      latencyMs,
+      rssi,
+      battery,
+      timestamp: new Date().toISOString(),
+    };
   },
 };

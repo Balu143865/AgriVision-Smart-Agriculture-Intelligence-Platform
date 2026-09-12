@@ -14,6 +14,7 @@ import weatherRoutes from './server/routes/weatherRoutes';
 import pestRiskRoutes from './server/routes/pestRiskRoutes';
 import marketPriceRoutes from './server/routes/marketPriceRoutes';
 import farmActivityRoutes from './server/routes/farmActivityRoutes';
+import deviceRoutes from './server/routes/deviceRoutes';
 
 dotenv.config();
 
@@ -51,6 +52,7 @@ async function startServer() {
   app.use('/api/pest-risk', pestRiskRoutes);
   app.use('/api/market-prices', marketPriceRoutes);
   app.use('/api/farm-activities', farmActivityRoutes);
+  app.use('/api/devices', deviceRoutes);
 
   // Centralized Error Handling Middleware
   app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

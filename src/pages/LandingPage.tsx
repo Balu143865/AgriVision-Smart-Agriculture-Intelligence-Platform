@@ -178,7 +178,7 @@ export const LandingPage: React.FC = () => {
       </motion.button>
 
       {/* SECTION 1: HERO (Morning Mint & Meadow in Light Mode) */}
-      <section className={`relative pt-24 pb-16 sm:pt-32 sm:pb-24 md:pt-40 md:pb-32 overflow-hidden transition-colors duration-300 ${
+      <section className={`relative min-h-screen flex flex-col justify-center pt-20 pb-8 sm:pt-24 sm:pb-10 overflow-hidden transition-colors duration-300 ${
         isDark
           ? 'bg-[#08100c]'
           : 'bg-gradient-to-b from-[#f0fdf4] via-[#f7fee7]/70 to-[#ecfdf5] border-b border-emerald-100/80'
@@ -193,23 +193,23 @@ export const LandingPage: React.FC = () => {
           isDark ? 'bg-emerald-500/10' : 'bg-emerald-400/15'
         }`} />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
+        <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10 my-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
             {/* Left Hero Content */}
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
-              className="lg:col-span-7 space-y-5 sm:space-y-6 text-left"
+              className="lg:col-span-7 space-y-4 sm:space-y-4 text-left"
             >
               {/* Badge */}
-              <div className={`inline-flex items-center gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full backdrop-blur-md shadow-xs border ${
+              <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full backdrop-blur-md shadow-xs border ${
                 isDark
                   ? 'bg-emerald-950/70 border-emerald-700/40'
                   : 'bg-emerald-100/90 border-emerald-300'
               }`}>
                 <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className={`text-[11px] sm:text-xs font-mono uppercase tracking-wider font-semibold ${
+                <span className={`text-[11px] font-mono uppercase tracking-wider font-semibold ${
                   isDark ? 'text-emerald-300' : 'text-emerald-900'
                 }`}>
                   Autonomous Precision Farming
@@ -217,7 +217,7 @@ export const LandingPage: React.FC = () => {
               </div>
 
               {/* Main Headline */}
-              <h1 className={`text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight font-['Outfit'] leading-[1.12] ${
+              <h1 className={`text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight font-['Outfit'] leading-[1.14] ${
                 isDark ? 'text-zinc-100' : 'text-slate-900'
               }`}>
                 Smart Farming. <br />
@@ -231,18 +231,18 @@ export const LandingPage: React.FC = () => {
               </h1>
 
               {/* Subtitle */}
-              <p className={`text-base sm:text-lg md:text-xl max-w-2xl leading-relaxed ${
+              <p className={`text-sm sm:text-base md:text-lg max-w-2xl leading-relaxed ${
                 isDark ? 'text-zinc-300' : 'text-slate-700'
               }`}>
                 Transform farm data into intelligent decisions with real-time crop, soil, weather and market insights.
               </p>
 
               {/* CTAs */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2 sm:pt-4">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1 sm:pt-2">
                 <Link
                   to="/dashboard"
                   id="hero-explore-dashboard-btn"
-                  className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-lime-600 hover:from-emerald-500 hover:to-lime-500 text-white font-semibold text-sm shadow-xl shadow-emerald-950/40 border border-emerald-400/40 transition-all active:scale-[0.98] group"
+                  className="inline-flex items-center justify-center gap-2.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-lime-600 hover:from-emerald-500 hover:to-lime-500 text-white font-semibold text-xs sm:text-sm shadow-lg shadow-emerald-950/30 border border-emerald-400/40 transition-all active:scale-[0.98] group"
                 >
                   <BarChart3 className="w-4 h-4 text-emerald-100" />
                   <span>Explore Dashboard</span>
@@ -256,10 +256,10 @@ export const LandingPage: React.FC = () => {
                     e.preventDefault();
                     document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className={`inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium text-sm backdrop-blur-md transition-all border ${
+                  className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium text-xs sm:text-sm backdrop-blur-md transition-all border ${
                     isDark
                       ? 'bg-[#0e1c14]/80 hover:bg-[#152a1e] text-zinc-200 border-emerald-800/40 hover:border-emerald-600/50'
-                      : 'bg-white hover:bg-emerald-50 text-slate-800 border-emerald-200/90 shadow-sm hover:border-emerald-400'
+                      : 'bg-white hover:bg-emerald-50 text-slate-800 border-emerald-200/90 shadow-xs hover:border-emerald-400'
                   }`}
                 >
                   <span>Discover Features</span>
@@ -267,19 +267,19 @@ export const LandingPage: React.FC = () => {
               </div>
 
               {/* Trust Indicators */}
-              <div className={`pt-4 sm:pt-6 border-t grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 text-xs font-mono ${
+              <div className={`pt-3 border-t grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 text-xs font-mono ${
                 isDark ? 'border-emerald-950/60 text-zinc-400' : 'border-emerald-200/80 text-slate-600'
               }`}>
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                   <span>Indian Mandi Rates</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                   <span>LoRaWAN IoT Sync</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                   <span>MongoDB Live Engine</span>
                 </div>
               </div>
@@ -287,69 +287,69 @@ export const LandingPage: React.FC = () => {
               {/* Scroll To Explore Prompt */}
               <motion.div
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 1, y: [0, 6, 0] }}
+                animate={{ opacity: 1, y: [0, 4, 0] }}
                 transition={{
                   opacity: { duration: 1, delay: 0.8 },
                   y: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
                 }}
-                className={`pt-4 hidden sm:flex items-center gap-2 transition-colors cursor-pointer w-fit ${
+                className={`pt-1 hidden sm:flex items-center gap-1.5 transition-colors cursor-pointer w-fit ${
                   isDark ? 'text-zinc-500 hover:text-emerald-400' : 'text-slate-500 hover:text-emerald-600'
                 }`}
                 onClick={() => {
                   document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
                 }}
               >
-                <span className="text-[11px] font-mono tracking-wider uppercase">Scroll to explore engines</span>
-                <ChevronDown className="w-3.5 h-3.5 text-emerald-500" />
+                <span className="text-[10px] font-mono tracking-wider uppercase">Scroll to explore engines</span>
+                <ChevronDown className="w-3 h-3 text-emerald-500" />
               </motion.div>
             </motion.div>
 
-            {/* Right Hero Visual: Futuristic Agriculture Telemetry Node with Relevant High-Res Imagery */}
+            {/* Right Hero Visual: Compact Futuristic Agriculture Telemetry Card */}
             <motion.div
               initial={{ opacity: 0, scale: 0.94 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: 0.2 }}
+              transition={{ duration: 0.8, delay: 0.15 }}
               className="lg:col-span-5 relative w-full"
             >
-              <div className={`relative mx-auto max-w-lg w-full rounded-2xl p-4 sm:p-5 backdrop-blur-xl border transition-all ${
+              <div className={`relative mx-auto max-w-md w-full rounded-2xl p-3 sm:p-3.5 backdrop-blur-xl border transition-all ${
                 isDark
                   ? 'bg-gradient-to-b from-[#102418]/90 to-[#0b1610]/95 border-emerald-600/40 shadow-2xl shadow-black/80'
-                  : 'bg-white/95 border-emerald-200/90 shadow-2xl shadow-emerald-950/10'
+                  : 'bg-white/95 border-emerald-200/90 shadow-xl shadow-emerald-950/10'
               }`}>
                 {/* Visual Header */}
-                <div className={`flex items-center justify-between pb-3.5 border-b mb-3.5 ${
+                <div className={`flex items-center justify-between pb-2 border-b mb-2 ${
                   isDark ? 'border-emerald-900/60' : 'border-slate-100'
                 }`}>
-                  <div className="flex items-center gap-2">
-                    <span className="relative flex h-2.5 w-2.5">
+                  <div className="flex items-center gap-1.5">
+                    <span className="relative flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                     </span>
-                    <span className={`text-xs font-mono font-semibold ${
+                    <span className={`text-[11px] font-mono font-semibold ${
                       isDark ? 'text-emerald-300' : 'text-emerald-800 font-bold'
                     }`}>
                       LIVE AERIAL RADAR: SECTOR 4A
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className={`text-[10px] font-mono px-2.5 py-0.5 rounded-full border flex items-center gap-1.5 ${
+                  <div className="flex items-center gap-1.5">
+                    <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full border flex items-center gap-1 ${
                       isDark
                         ? 'text-zinc-300 bg-emerald-950/70 border-emerald-800/50'
                         : 'text-emerald-800 bg-emerald-50 border-emerald-200'
                     }`}>
-                      <Radio className="w-2.5 h-2.5 text-emerald-500 animate-pulse" />
+                      <Radio className="w-2 h-2 text-emerald-500 animate-pulse" />
                       LoRaWAN Mesh Live
                     </span>
                   </div>
                 </div>
 
                 {/* Spectral Filter Toggle Bar */}
-                <div className={`flex items-center justify-between gap-1.5 mb-3 p-1 rounded-lg border text-[11px] font-mono ${
+                <div className={`flex items-center justify-between gap-1 mb-2 p-0.5 rounded-lg border text-[10px] font-mono ${
                   isDark ? 'bg-[#07130b] border-emerald-900/50' : 'bg-slate-50 border-slate-200'
                 }`}>
                   <button
                     onClick={() => setSpectralMode('rgb')}
-                    className={`flex-1 py-1 px-2 rounded-md transition-all flex items-center justify-center gap-1.5 ${
+                    className={`flex-1 py-0.5 px-1.5 rounded transition-all flex items-center justify-center gap-1 ${
                       spectralMode === 'rgb'
                         ? 'bg-emerald-600 text-white font-medium shadow-xs'
                         : isDark
@@ -357,12 +357,12 @@ export const LandingPage: React.FC = () => {
                         : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
-                    <Eye className="w-3 h-3" />
+                    <Eye className="w-2.5 h-2.5" />
                     <span>Optical RGB</span>
                   </button>
                   <button
                     onClick={() => setSpectralMode('ndvi')}
-                    className={`flex-1 py-1 px-2 rounded-md transition-all flex items-center justify-center gap-1.5 ${
+                    className={`flex-1 py-0.5 px-1.5 rounded transition-all flex items-center justify-center gap-1 ${
                       spectralMode === 'ndvi'
                         ? 'bg-emerald-600 text-white font-medium shadow-xs'
                         : isDark
@@ -370,12 +370,12 @@ export const LandingPage: React.FC = () => {
                         : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
-                    <Scan className="w-3 h-3" />
+                    <Scan className="w-2.5 h-2.5" />
                     <span>NDVI Vigour</span>
                   </button>
                   <button
                     onClick={() => setSpectralMode('thermal')}
-                    className={`flex-1 py-1 px-2 rounded-md transition-all flex items-center justify-center gap-1.5 ${
+                    className={`flex-1 py-0.5 px-1.5 rounded transition-all flex items-center justify-center gap-1 ${
                       spectralMode === 'thermal'
                         ? 'bg-emerald-600 text-white font-medium shadow-xs'
                         : isDark
@@ -383,13 +383,13 @@ export const LandingPage: React.FC = () => {
                         : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
-                    <Droplets className="w-3 h-3" />
+                    <Droplets className="w-2.5 h-2.5" />
                     <span>Thermal Hydration</span>
                   </button>
                 </div>
 
                 {/* Photorealistic Smart Agriculture Drone & Crop Canopy Frame */}
-                <div className="relative h-60 sm:h-64 rounded-xl overflow-hidden border border-emerald-600/50 group bg-black">
+                <div className="relative h-36 sm:h-40 rounded-lg overflow-hidden border border-emerald-600/40 group bg-black">
                   {/* High-definition Agriculture Image */}
                   <img
                     src="/smart_agri_hero.jpg"
@@ -405,7 +405,7 @@ export const LandingPage: React.FC = () => {
                   />
 
                   {/* Gradient Vignette & HUD Overlays */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#08100c] via-transparent to-black/40 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#08100c] via-transparent to-black/30 pointer-events-none" />
 
                   {/* Spectral Filter tint layer */}
                   {spectralMode === 'ndvi' && (
@@ -416,60 +416,60 @@ export const LandingPage: React.FC = () => {
                   )}
 
                   {/* Subtle Grid overlay */}
-                  <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98115_1px,transparent_1px),linear-gradient(to_bottom,#10b98115_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+                  <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98115_1px,transparent_1px),linear-gradient(to_bottom,#10b98115_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
 
                   {/* Real-time Autonomous Drone Laser Scan Beam */}
                   <motion.div
-                    animate={{ y: [0, 230, 0] }}
+                    animate={{ y: [0, 140, 0] }}
                     transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-                    className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_16px_#10b981] pointer-events-none"
+                    className="absolute inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_12px_#10b981] pointer-events-none"
                   />
 
                   {/* Top Floating Telemetry Chips */}
-                  <div className="absolute top-2.5 inset-x-2.5 flex items-center justify-between z-10">
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 border border-emerald-500/40 text-[10px] font-mono text-emerald-300 backdrop-blur-md shadow-lg">
-                      <Satellite className="w-3 h-3 text-emerald-400" />
+                  <div className="absolute top-2 inset-x-2 flex items-center justify-between z-10">
+                    <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/60 border border-emerald-500/40 text-[9px] font-mono text-emerald-300 backdrop-blur-md">
+                      <Satellite className="w-2.5 h-2.5 text-emerald-400" />
                       <span>AGRI-DRONE: 120m AGL</span>
                     </div>
 
                     <button
                       onClick={() => setIsImageModalOpen(true)}
-                      className="p-1.5 rounded-lg bg-black/60 hover:bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 backdrop-blur-md transition-colors"
+                      className="p-1 rounded-md bg-black/60 hover:bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 backdrop-blur-md transition-colors"
                       title="Inspect High-Res Telemetry"
                     >
-                      <Maximize2 className="w-3.5 h-3.5" />
+                      <Maximize2 className="w-3 h-3" />
                     </button>
                   </div>
 
                   {/* Floating Companion Badge: Macro Soil IoT Sensor Probe */}
-                  <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between z-10 gap-2">
-                    <div className="flex items-center gap-2 p-1.5 pr-3 rounded-xl bg-black/75 border border-emerald-500/40 backdrop-blur-md shadow-xl max-w-[70%]">
+                  <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between z-10 gap-1.5">
+                    <div className="flex items-center gap-1.5 p-1 pr-2 rounded-lg bg-black/75 border border-emerald-500/40 backdrop-blur-md max-w-[65%]">
                       <img
                         src="/smart_soil_sensor.jpg"
                         alt="Macro Soil NPK Sensor Node"
                         referrerPolicy="no-referrer"
-                        className="w-8 h-8 rounded-lg object-cover border border-emerald-400/50 shrink-0"
+                        className="w-6 h-6 rounded object-cover border border-emerald-400/50 shrink-0"
                       />
                       <div className="overflow-hidden">
-                        <span className="text-[10px] font-mono font-semibold text-emerald-300 block truncate">
+                        <span className="text-[9px] font-mono font-semibold text-emerald-300 block truncate">
                           Node #4A Probe
                         </span>
-                        <span className="text-[9px] font-mono text-zinc-300 block truncate">
-                          NPK 245:38:310 · pH 6.8
+                        <span className="text-[8px] font-mono text-zinc-300 block truncate">
+                          NPK 245:38:310
                         </span>
                       </div>
                     </div>
 
-                    <div className="px-2.5 py-1.5 rounded-xl bg-emerald-950/80 border border-emerald-400/40 backdrop-blur-md text-right shrink-0">
-                      <span className="text-[9px] font-mono text-zinc-400 block uppercase">NDVI Index</span>
-                      <span className="text-xs font-mono font-bold text-emerald-300">0.86 (Optimal)</span>
+                    <div className="px-2 py-1 rounded-lg bg-emerald-950/80 border border-emerald-400/40 backdrop-blur-md text-right shrink-0">
+                      <span className="text-[8px] font-mono text-zinc-400 block uppercase">NDVI</span>
+                      <span className="text-[10px] font-mono font-bold text-emerald-300">0.86 (Optimal)</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Monitored Crop Varieties in Sector */}
-                <div className="grid grid-cols-3 gap-2 mt-3 text-[10px] font-mono">
-                  <div className={`p-2 rounded-lg border ${
+                <div className="grid grid-cols-3 gap-1.5 mt-2 text-[9px] font-mono">
+                  <div className={`p-1.5 rounded-md border ${
                     isDark
                       ? 'bg-[#0c1a12] border-emerald-800/40'
                       : 'bg-emerald-50 border-emerald-200'
@@ -477,11 +477,11 @@ export const LandingPage: React.FC = () => {
                     <span className={`font-bold block truncate ${isDark ? 'text-emerald-400' : 'text-emerald-700'}`}>
                       Rice BPT-5204
                     </span>
-                    <span className={`text-[9px] ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
+                    <span className={`text-[8px] ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
                       Flowering · 92%
                     </span>
                   </div>
-                  <div className={`p-2 rounded-lg border ${
+                  <div className={`p-1.5 rounded-md border ${
                     isDark
                       ? 'bg-[#0c1a12] border-emerald-800/40'
                       : 'bg-emerald-50 border-emerald-200'
@@ -489,11 +489,11 @@ export const LandingPage: React.FC = () => {
                     <span className={`font-bold block truncate ${isDark ? 'text-emerald-400' : 'text-emerald-700'}`}>
                       Wheat HD-2967
                     </span>
-                    <span className={`text-[9px] ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
+                    <span className={`text-[8px] ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
                       Tillering · 89%
                     </span>
                   </div>
-                  <div className={`p-2 rounded-lg border ${
+                  <div className={`p-1.5 rounded-md border ${
                     isDark
                       ? 'bg-[#14180d] border-amber-800/40'
                       : 'bg-amber-50 border-amber-200'
@@ -501,45 +501,45 @@ export const LandingPage: React.FC = () => {
                     <span className={`font-bold block truncate ${isDark ? 'text-amber-400' : 'text-amber-700'}`}>
                       Tomato Hybrid
                     </span>
-                    <span className={`text-[9px] ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
+                    <span className={`text-[8px] ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
                       Ripening · 71%
                     </span>
                   </div>
                 </div>
 
                 {/* Mini Telemetry KPIs */}
-                <div className="grid grid-cols-2 gap-3 mt-3">
-                  <div className={`p-3 rounded-xl border ${
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <div className={`p-2 rounded-lg border ${
                     isDark
                       ? 'bg-emerald-950/30 border-emerald-800/40'
                       : 'bg-emerald-50/70 border-emerald-200'
                   }`}>
-                    <span className={`text-[11px] block ${isDark ? 'text-zinc-400' : 'text-slate-600'}`}>Forecast Yield</span>
-                    <span className={`text-lg font-bold font-mono ${isDark ? 'text-emerald-300' : 'text-emerald-800'}`}>
+                    <span className={`text-[10px] block ${isDark ? 'text-zinc-400' : 'text-slate-600'}`}>Forecast Yield</span>
+                    <span className={`text-sm font-bold font-mono ${isDark ? 'text-emerald-300' : 'text-emerald-800'}`}>
                       4.8 Tons/acre
                     </span>
-                    <span className="text-[10px] text-emerald-600 font-mono block mt-0.5">↑ +8.5% YoY</span>
+                    <span className="text-[9px] text-emerald-600 font-mono block">↑ +8.5% YoY</span>
                   </div>
-                  <div className={`p-3 rounded-xl border ${
+                  <div className={`p-2 rounded-lg border ${
                     isDark
                       ? 'bg-emerald-950/30 border-emerald-800/40'
                       : 'bg-emerald-50/70 border-emerald-200'
                   }`}>
-                    <span className={`text-[11px] block ${isDark ? 'text-zinc-400' : 'text-slate-600'}`}>Mandi Spot Price</span>
-                    <span className={`text-lg font-bold font-mono ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    <span className={`text-[10px] block ${isDark ? 'text-zinc-400' : 'text-slate-600'}`}>Mandi Spot Price</span>
+                    <span className={`text-sm font-bold font-mono ${isDark ? 'text-white' : 'text-slate-900'}`}>
                       ₹2,450 / Qtl
                     </span>
-                    <span className="text-[10px] text-emerald-600 font-mono block mt-0.5">↑ Bullish Trend</span>
+                    <span className="text-[9px] text-emerald-600 font-mono block">↑ Bullish Trend</span>
                   </div>
                 </div>
 
                 {/* Instant Dashboard link inside card */}
                 <Link
                   to="/dashboard"
-                  className="mt-3.5 w-full py-2.5 flex items-center justify-center gap-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-md shadow-emerald-950/20 transition-all active:scale-[0.98]"
+                  className="mt-2 w-full py-2 flex items-center justify-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-xs transition-all active:scale-[0.98]"
                 >
                   <span>Open Full Agro Dashboard</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
             </motion.div>

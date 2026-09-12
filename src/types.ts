@@ -128,3 +128,39 @@ export interface IUser {
   role: string;
   farmName: string;
 }
+
+export interface IIoTDevice {
+  _id?: string;
+  deviceId: string;
+  name: string;
+  model: string;
+  type: 'soil_npk_probe' | 'capacitive_moisture' | 'weather_station' | 'lora_multisensor';
+  status: 'online' | 'pairing' | 'offline' | 'calibrating';
+  protocol: 'LoRaWAN 865MHz' | 'NB-IoT' | 'BLE 5.2 Mesh';
+  batteryLevel: number; // %
+  signalStrength: number; // dBm (e.g. -68)
+  lastSync: string;
+  sector: string;
+  depths: string;
+  macAddress: string;
+  liveReadings: {
+    moisture: number; // %
+    ph: number;
+    nitrogen: number; // kg/ha or mg/kg
+    phosphorus: number; // kg/ha
+    potassium: number; // kg/ha
+    soilTemp: number; // °C
+    electricalConductivity: number; // dS/m
+  };
+}
+
+export type DashboardTab =
+  | 'overview'
+  | 'crops'
+  | 'soil'
+  | 'weather'
+  | 'pest'
+  | 'yield'
+  | 'market'
+  | 'activity'
+  | 'settings';

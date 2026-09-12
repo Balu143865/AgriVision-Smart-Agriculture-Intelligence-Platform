@@ -1,4 +1,4 @@
-import { ICrop, ISoilData, IWeatherData, IPestRisk, IMarketPrice, IFarmActivity, IUser } from '../models/types';
+import { ICrop, ISoilData, IWeatherData, IPestRisk, IMarketPrice, IFarmActivity, IUser, IIoTDevice } from '../models/types';
 
 export const defaultUsers: IUser[] = [
   {
@@ -144,6 +144,35 @@ export const defaultSoilData: ISoilData = {
   nextScheduledWatering: 'Today at 04:30 PM IST (Zone B Drip Line)',
 };
 
+export function generateDynamic7DayForecast(baseDate: Date = new Date()) {
+  const templates = [
+    { condition: 'Partly Cloudy', tempMax: 31, tempMin: 22, rainChance: 25, humidity: 62 },
+    { condition: 'Light Rain', tempMax: 30, tempMin: 23, rainChance: 70, humidity: 78 },
+    { condition: 'Cloudy', tempMax: 29, tempMin: 22, rainChance: 45, humidity: 72 },
+    { condition: 'Sunny', tempMax: 32, tempMin: 24, rainChance: 10, humidity: 55 },
+    { condition: 'Clear Sky', tempMax: 33, tempMin: 24, rainChance: 5, humidity: 50 },
+    { condition: 'Partly Cloudy', tempMax: 31, tempMin: 23, rainChance: 20, humidity: 58 },
+    { condition: 'Light Rain', tempMax: 30, tempMin: 22, rainChance: 65, humidity: 74 },
+  ];
+
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(baseDate);
+    d.setDate(baseDate.getDate() + i);
+    const day = d.toLocaleDateString('en-US', { weekday: 'short' });
+    const date = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const t = templates[i % templates.length];
+    return {
+      day,
+      date,
+      tempMax: t.tempMax,
+      tempMin: t.tempMin,
+      condition: t.condition,
+      rainChance: t.rainChance,
+      humidity: t.humidity,
+    };
+  });
+}
+
 export const defaultWeatherData: IWeatherData = {
   _id: 'weather_station_01',
   temperature: 28,
@@ -153,15 +182,7 @@ export const defaultWeatherData: IWeatherData = {
   uvIndex: 7.2,
   pressure: 1012,
   condition: 'Partly Cloudy',
-  forecast7Days: [
-    { day: 'Mon', date: 'Sep 12', tempMax: 31, tempMin: 22, condition: 'Partly Cloudy', rainChance: 25, humidity: 62 },
-    { day: 'Tue', date: 'Sep 13', tempMax: 30, tempMin: 23, condition: 'Light Rain', rainChance: 70, humidity: 78 },
-    { day: 'Wed', date: 'Sep 14', tempMax: 29, tempMin: 22, condition: 'Cloudy', rainChance: 45, humidity: 72 },
-    { day: 'Thu', date: 'Sep 15', tempMax: 32, tempMin: 24, condition: 'Sunny', rainChance: 10, humidity: 55 },
-    { day: 'Fri', date: 'Sep 16', tempMax: 33, tempMin: 24, condition: 'Clear Sky', rainChance: 5, humidity: 50 },
-    { day: 'Sat', date: 'Sep 17', tempMax: 31, tempMin: 23, condition: 'Partly Cloudy', rainChance: 20, humidity: 58 },
-    { day: 'Sun', date: 'Sep 18', tempMax: 30, tempMin: 22, condition: 'Light Rain', rainChance: 65, humidity: 74 },
-  ],
+  forecast7Days: generateDynamic7DayForecast(),
   hourlyTrends: [
     { time: '06:00', temp: 22, humidity: 82, rainProb: 15 },
     { time: '09:00', temp: 25, humidity: 72, rainProb: 10 },
@@ -426,5 +447,80 @@ export const defaultFarmActivities: IFarmActivity[] = [
     timestamp: '2 days ago',
     actor: 'Field Automation Controller',
     status: 'Completed',
+  },
+];
+
+export const defaultDevices: IIoTDevice[] = [
+  {
+    _id: 'dev_soil_001',
+    deviceId: 'AGRI-SOIL-701A',
+    name: 'Sector 4A Multi-Depth NPK Probe',
+    model: 'AgriSense LoRa Pro-X4',
+    type: 'soil_npk_probe',
+    status: 'online',
+    protocol: 'LoRaWAN 865MHz',
+    batteryLevel: 94,
+    signalStrength: -68,
+    lastSync: 'Just now',
+    sector: 'Sector 4A - North Plot',
+    depths: '15cm, 30cm, 45cm',
+    macAddress: '8C:1F:64:B2:9A:14',
+    liveReadings: {
+      moisture: 68,
+      ph: 6.8,
+      nitrogen: 245,
+      phosphorus: 38,
+      potassium: 310,
+      soilTemp: 24.2,
+      electricalConductivity: 1.15,
+    },
+  },
+  {
+    _id: 'dev_soil_002',
+    deviceId: 'AGRI-SOIL-702B',
+    name: 'Sector 2B Paddy Field Capacitive Array',
+    model: 'TerraLink SoilMaster v3',
+    type: 'capacitive_moisture',
+    status: 'online',
+    protocol: 'LoRaWAN 865MHz',
+    batteryLevel: 88,
+    signalStrength: -72,
+    lastSync: '3 mins ago',
+    sector: 'Sector 2B - East Lowland',
+    depths: '10cm, 25cm',
+    macAddress: '8C:1F:64:B2:9B:28',
+    liveReadings: {
+      moisture: 74,
+      ph: 6.5,
+      nitrogen: 210,
+      phosphorus: 32,
+      potassium: 295,
+      soilTemp: 23.8,
+      electricalConductivity: 1.08,
+    },
+  },
+  {
+    _id: 'dev_soil_003',
+    deviceId: 'AGRI-SOIL-703C',
+    name: 'Sector 1A Tomato Greenhouse Sub-Root Sensor',
+    model: 'AgriSense LoRa Pro-X4',
+    type: 'soil_npk_probe',
+    status: 'online',
+    protocol: 'LoRaWAN 865MHz',
+    batteryLevel: 97,
+    signalStrength: -61,
+    lastSync: '6 mins ago',
+    sector: 'Sector 1A - Controlled Nursery',
+    depths: '10cm, 20cm',
+    macAddress: '8C:1F:64:B2:9C:35',
+    liveReadings: {
+      moisture: 62,
+      ph: 6.9,
+      nitrogen: 230,
+      phosphorus: 40,
+      potassium: 320,
+      soilTemp: 22.5,
+      electricalConductivity: 1.22,
+    },
   },
 ];

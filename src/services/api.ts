@@ -8,6 +8,7 @@ import {
   IMarketPrice,
   IFarmActivity,
   IUser,
+  IIoTDevice,
 } from '../types';
 
 const apiClient = axios.create({
@@ -123,5 +124,44 @@ export const api = {
   async checkHealth() {
     const res = await apiClient.get('/health');
     return res.data;
-  }
+  },
+
+  // IoT Device Management & Sensor Pairing
+  async getDevices(): Promise<IIoTDevice[]> {
+    const res = await apiClient.get<{ success: boolean; data: IIoTDevice[] }>('/devices');
+    return res.data.data;
+  },
+
+  async pairDevice(device: Partial<IIoTDevice>): Promise<{ device: IIoTDevice; updatedSoil: ISoilData }> {
+    const res = await apiClient.post<{
+      success: boolean;
+      message: string;
+      data: { device: IIoTDevice; updatedSoil: ISoilData };
+    }>('/devices/pair', device);
+    return res.data.data;
+  },
+
+  async sendDeviceTelemetry(
+    deviceId: string,
+    readings: Partial<IIoTDevice['liveReadings']>
+  ): Promise<{ device: IIoTDevice; updatedSoil: ISoilData }> {
+    const res = await apiClient.post<{
+      success: boolean;
+      data: { device: IIoTDevice; updatedSoil: ISoilData };
+    }>(`/devices/${deviceId}/telemetry`, readings);
+    return res.data.data;
+  },
+
+  async testDevicePing(deviceId: string): Promise<{ latencyMs: number; rssi: number; battery: number; timestamp: string }> {
+    const res = await apiClient.post<{
+      success: boolean;
+      data: { latencyMs: number; rssi: number; battery: number; timestamp: string };
+    }>(`/devices/${deviceId}/ping`);
+    return res.data.data;
+  },
+
+  async deleteDevice(deviceId: string): Promise<boolean> {
+    const res = await apiClient.delete<{ success: boolean; message: string }>(`/devices/${deviceId}`);
+    return res.data.success;
+  },
 };
